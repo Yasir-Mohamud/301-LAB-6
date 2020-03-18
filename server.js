@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 'use strict';
 const express = require('express');
 const app = express();
