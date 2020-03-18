@@ -66,7 +66,7 @@ function Weather(obj) {
 
 
 app.get('*',(request,response)=>{
-  response.status(404).send('there is nothing on this page');
+  response.status(500).send('there is nothing on this page');
 })
 app.listen(PORT, () => console.log(`listening on port ${PORT}`));
 
