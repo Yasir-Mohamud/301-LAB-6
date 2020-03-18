@@ -1,17 +1,37 @@
 # 301-LAB-6
 
 
-Number and name of feature:Documentation
+Number and name of feature:Data Formatting
+
+Estimate of time needed to complete: 30min
+
+Start time: 9:30
+
+Finish time: 9:35
+
+Actual time needed to complete: 5mins
+
+
+Number and name of feature:Locations
 
 Estimate of time needed to complete: 1hr
 
-Start time: 11:20;
+Start time: 9:37
 
-Finish time: _____
+Finish time: 11:03
 
-Actual time needed to complete: _____
+Actual time needed to complete: 1hr 26mins
 
 
+Number and name of feature:WEATHER
+
+Estimate of time needed to complete: 1hr
+
+Start time: 11:03
+
+Finish time: 12:20
+
+Actual time needed to complete: 1hr 17mins
 
 
 
@@ -31,7 +51,7 @@ a js file.
 .eslintrc file.
 .gitignore file.
 data.json.
-
+API keys
 
 ## Architecture
 <!-- Provide a detailed description of the application design. What technologies (languages, libraries, etc) you're using, and any other relevant design information. -->
@@ -43,6 +63,10 @@ lIBRARIES - Jquery,Node_Modules
  <!-- Use this area to document the iterative changes made to your application as each feature is successfully implemented. Use time stamps. Here's an examples: -->
 
 03-17-2020 12:00pm has all files setup.
+03-18-2020 9:45 am DATA FORMATTING is completed.
+03-18-2020 11:03 am LOCATION  s completed.
+03-18-2020 12:20pm WEATHER is completed.
+
 
 ## Credits and Collaborations
 <!-- Give credit (and a link) to other people or resources that helped you build this application. -->
