@@ -33,6 +33,16 @@ Finish time: 12:20
 
 Actual time needed to complete: 1hr 17mins
 
+Number and name of feature:trails
+
+Estimate of time needed to complete: 1hr
+
+Start time: 11:00pm
+
+Finish time: 12:00am
+
+Actual time needed to complete: 1hr
+
 
 
 
@@ -66,6 +76,7 @@ lIBRARIES - Jquery,Node_Modules
 03-18-2020 9:45 am DATA FORMATTING is completed.
 03-18-2020 11:03 am LOCATION  s completed.
 03-18-2020 12:20pm WEATHER is completed.
+03-19-2020 12:00am TRAILS is completed.
 
 
 ## Credits and Collaborations
