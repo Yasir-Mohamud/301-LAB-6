@@ -23,7 +23,7 @@ app.get('/location', (request,response) => {
       let geo = superagentResults.body;
 
       let location = new City (geo[0],city);
-      response.send(location);
+      response.status(200).send(location);
     })
     .catch(err => console.error(err))
 });
@@ -42,13 +42,12 @@ app.get('/weather', (request,response) => {
   superagent.get(urlWeather)
     .then(superagentResults => {
       let weather = superagentResults.body;
-      console.log(Weather)
       let weatherArr = weather.daily.data;
       const forecastArr =  weatherArr.map(day => {
         return new Weather(day)
       })
-  
-      response.send(forecastArr);
+
+      response.status(200).send(forecastArr);
     })
     .catch(err => console.error(err))
 });
@@ -66,32 +65,28 @@ app.get('/trails', (request,response) => {
 
   let latitude = request.query.latitude;
   let longitude = request.query.longitude;
-  let urlTrail = `https://www.hikingproject.com/data/get-trails?${latitude}&${longitude}&maxDistance=10&key=${process.env.TRAILS_API_KEY}`
+  let urlTrail = `https://www.hikingproject.com/data/get-trails?lat=${latitude}&lon=${longitude}&maxDistance=10&key=${process.env.TRAILS_API_KEY}`
 
-  superagent.get(urlTrails)
+  superagent.get(urlTrail)
     .then(superagentResults => {
-      let trail = superagentResults.body;
-      console.log(trail)
-      let trailArr = trail.daily.data;
-       trailArr.forEach(trail => {
-
-       }
-      response.send(trailArr);
+      const theTrail = superagentResults.body.trails.map(trail => {
+        return new Trail(trail)
+      })
+      response.status(200).send(theTrail);
     })
     .catch(err => console.error(err))
 });
 
 function Trail (obj) {
-  this.name = obj. 
-  this.location": "Riverbend, Washington",
-    this.length": "4.3",
-    this.stars": "4.4",
-    this.star_votes": "84",
-    this.summary": "An extremely popular out-and-back hike to the viewpoint on Rattlesnake Ledge.",
-    this.trail_url": "https://www.hikingproject.com/trail/7021679/rattlesnake-ledge",
-    this.conditions": "Dry: The trail is clearly marked and well maintained.",
-    this.condition_date": "2018-07-21",
-    this.condition_time": "0:00:00 "
+  this.name = obj.name ;
+  this.location = obj.location;
+  this.stars = obj.stars;
+  this.star_votes = obj.star_votes;
+  this.summary = obj.summary;
+  this.trail_url = obj.url;
+  this.conditions = obj.conditionsStatus;
+  this.condition_date = obj.conditionDate.slice(0,10);
+  this.condition_time = obj.conditionDate.slice(11,19);
 }
 
 
