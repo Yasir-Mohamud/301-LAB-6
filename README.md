@@ -43,6 +43,27 @@ Finish time: 12:00am
 
 Actual time needed to complete: 1hr
 
+Number and name of feature:1.DATABASE
+
+Estimate of time needed to complete: 1hr
+
+Start time: 9:00pm
+
+Finish time: 10:36am
+
+Actual time needed to complete: 1hr 36MINS
+
+
+Number and name of feature:2.SERVER
+
+Estimate of time needed to complete: 1hr
+
+Start time: 10:36pm
+
+Finish time: 10:36am
+
+Actual time needed to complete: 1hr 36MINS
+
 
 
 

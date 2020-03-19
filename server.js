@@ -4,6 +4,7 @@
 const express = require('express');
 const app = express();
 const superagent = require('superagent');
+const pg = require('pg');
 require('dotenv').config();
 
 const cors = require('cors');
@@ -11,28 +12,38 @@ app.use(cors());
 
 const PORT = process.env.PORT || 3001;
 
+
+
+
+
+const client = new pg.Client(process.env.DATABASE_URL);
+
+client.on('error', err => console.error(err));
+
+client.connect()
+  .then (() => {
+    app.listen(PORT, () => console.log(`listening on port ${PORT}`));
+  })
+
+// eslint-disable-next-line no-unused-vars
 app.get('/location', (request,response) => {
 
 
   let city = request.query.city;
+  let sql = 'INSERT INTO city_explorer_table (city_name) VALUES($1);';
+  let safeValues = [city];
+  client.query(sql, safeValues);
+  // let urlGeo = `https://us1.locationiq.com/v1/search.php?key=${process.env.GEOCODE_API_KEY}&q=${city}&format=json`
 
-  let urlGeo = `https://us1.locationiq.com/v1/search.php?key=${process.env.GEOCODE_API_KEY}&q=${city}&format=json`
-
-  superagent.get(urlGeo)
-    .then(superagentResults => {
-      let geo = superagentResults.body;
-
-      let location = new City (geo[0],city);
-      response.status(200).send(location);
-    })
-    .catch(err => console.error(err))
+  // superagent.get(urlGeo)
+  //   .then(superagentResults => {
+  //     let geo = superagentResults.body;
+  //     let location = new City (geo[0],city);
+  //     response.status(200).send(location);
+  //   })
+  // .catch(err => console.error(err))
 });
-function City (obj,city) {
-  this.search_query = city;
-  this.formatted_query = obj.display_name;
-  this.latitude = obj.lat;
-  this.longitude = obj.lon;
-}
+
 app.get('/weather', (request,response) => {
 
   let latitude = request.query.latitude;
@@ -93,5 +104,8 @@ function Trail (obj) {
 app.get('*',(request,response)=>{
   response.status(500).send('there is nothing on this page');
 })
-app.listen(PORT, () => console.log(`listening on port ${PORT}`));
+
+
+
+
 
