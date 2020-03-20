@@ -23,24 +23,31 @@ client.connect()
 
 app.get('/location', (request,response) => {
   let city = request.query.city;
-  let sql = 'SELECT * FROM location WHERE search_query=$1;';
-  console.log('line 27' , sql)
+  let sql = 'SELECT * FROM locations WHERE search_query=$1;';
   let safeValues = [city];
-  console.log(safeValues)
+  console.log('line 27' , sql)
   client.query(sql, safeValues)
     .then(results => {
-      console.log(results);
-      if(results.rows.length > 0) {
-        response.send(results.row[0])
+      if(results.rows.length>0) {
+        response.send(results.rows[0])
       } else {
         let urlGeo = `https://us1.locationiq.com/v1/search.php?key=${process.env.GEOCODE_API_KEY}&q=${city}&format=json`
         superagent.get(urlGeo)
           .then(superagentResults => {
             let geo = superagentResults.body;
             let location = new City (geo[0],city);
-            let sql = 'INSERT INTO city_explorer_table (search_query, formatted_query, latitude,longitude) VALUES ($1, $2, $3, $4);';
-            let safeValues = [city, location.formatted_query, location.latitude, location.longitude];
-            client.query(sql, safeValues);
+            let sql = 'INSERT INTO locations (search_query, formatted_query, latitude,longitude) VALUES ($1, $2, $3, $4);';
+            let safeValues = [location.search_query, location.formatted_query, location.latitude, location.longitude];
+            console.log('line 41', sql);
+            console.log('safe values', safeValues)
+            client.query(sql, safeValues)
+              .then ((data) => {
+                console.log('line',data);
+                response.send(location);
+              })
+            // console.log('line 43',sql, safeValues)
+            // response.send(location);
+
           })
           .catch(err => console.error(err))
       }
