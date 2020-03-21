@@ -1,15 +1,15 @@
 
+DROP TABLE IF EXISTS cities;
 
-DROP TABLE IF EXISTS city_explorer_table;
-
-CREATE TABLE city_explorer_table (
-    id SERIAL PRIMARY KEY,
-    city_name VARCHAR(255),
-    latitude VARCHAR(255),
-    longitude VARCHAR(255)
+CREATE TABLE cities (
+  id SERIAL PRIMARY KEY,
+    search_query VARCHAR(255),
+    formatted_query VARCHAR(255),
+    latitude NUMERIC(20,14),
+    longitude NUMERIC(20,14)
 );
 
-INSERT INTO city_explorer_table (city_name,latitude,longitude) 
-VALUES ('Seattle', 'lat.test','lon.test');
+INSERT INTO cities (search_query,formatted_query,latitude,longitude) 
+VALUES ('portland','hello', '0', '0');
 
-SELECT * FROM city_explorer_table;
+SELECT * FROM cities;

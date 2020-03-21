@@ -12,10 +12,6 @@ app.use(cors());
 
 const PORT = process.env.PORT || 3001;
 
-
-
-
-
 const client = new pg.Client(process.env.DATABASE_URL);
 
 client.on('error', err => console.error(err));
@@ -25,24 +21,51 @@ client.connect()
     app.listen(PORT, () => console.log(`listening on port ${PORT}`));
   })
 
-// eslint-disable-next-line no-unused-vars
 app.get('/location', (request,response) => {
-
-
   let city = request.query.city;
-  let sql = 'INSERT INTO city_explorer_table (city_name) VALUES($1);';
+  let sql = 'SELECT * FROM cities WHERE search_query=$1;';
   let safeValues = [city];
-  client.query(sql, safeValues);
-  // let urlGeo = `https://us1.locationiq.com/v1/search.php?key=${process.env.GEOCODE_API_KEY}&q=${city}&format=json`
+  // console.log('line 27' , sql)
+  client.query(sql, safeValues)
+    .then(results => {
+      if(results.rows.length>0) {
+        console.log('this is the results', results.rows);
+        console.log('found in the database',city)
+        response.send(results.rows[0])
+      } else {
+        console.log('going to superagent',city)
+        let urlGeo = `https://us1.locationiq.com/v1/search.php?key=${process.env.GEOCODE_API_KEY}&q=${city}&format=json`
+        superagent.get(urlGeo)
+          .then(superagentResults => {
+            let geo = superagentResults.body;
 
-  // superagent.get(urlGeo)
-  //   .then(superagentResults => {
-  //     let geo = superagentResults.body;
-  //     let location = new City (geo[0],city);
-  //     response.status(200).send(location);
-  //   })
-  // .catch(err => console.error(err))
+            let location = new City (geo[0],city);
+            console.log('this is hte location',location);
+            let sql = 'INSERT INTO cities (search_query, formatted_query, latitude,longitude) VALUES ($1, $2, $3, $4) returning id;';
+            let safeValues = [location.search_query, location.formatted_query, location.latitude, location.longitude];
+            client.query(sql, safeValues)
+              .then ((data) => {
+                console.log('line',data);
+                response.send(location);
+              })
+            // console.log('line 43',sql, safeValues)
+            // response.send(location);
+
+          })
+          .catch(err => console.error(err))
+      }
+
+    });
+
 });
+
+//// location
+function City (obj, city) {
+  this.search_query = city;
+  this.formatted_query = obj.display_name;
+  this.latitude = obj.lat;
+  this.longitude = obj.lon;
+}
 
 app.get('/weather', (request,response) => {
 
@@ -62,6 +85,8 @@ app.get('/weather', (request,response) => {
     })
     .catch(err => console.error(err))
 });
+
+
 
 /// weather
 
@@ -100,12 +125,34 @@ function Trail (obj) {
   this.condition_time = obj.conditionDate.slice(11,19);
 }
 
+app.get('/movies',(request,respond) => {
+  let city = request.query.search_query;
+  let urlMovie = `https://api.themoviedb.org/3/movie/550?api_key=${process.env.MOVIE_API_KEY}`
+
+
+
+
+
+})
+
+
+function Movie (obj) {
+
+  this.title = obj.title;
+  this.overview = obj.overview;
+  this.average_votes = obj.average_votes;
+  this.total_votes = obj.total_votes;
+  this.image_url = obj.image_url;
+  this.popularity = obj.popularity;
+  this.released_on = obj.released_on;
+}
+
+
+
+
 
 app.get('*',(request,response)=>{
   response.status(500).send('there is nothing on this page');
 })
-
-
-
 
 
