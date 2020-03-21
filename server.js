@@ -23,23 +23,26 @@ client.connect()
 
 app.get('/location', (request,response) => {
   let city = request.query.city;
-  let sql = 'SELECT * FROM locations WHERE search_query=$1;';
+  let sql = 'SELECT * FROM cities WHERE search_query=$1;';
   let safeValues = [city];
-  console.log('line 27' , sql)
+  // console.log('line 27' , sql)
   client.query(sql, safeValues)
     .then(results => {
       if(results.rows.length>0) {
+        console.log('this is the results', results.rows);
+        console.log('found in the database',city)
         response.send(results.rows[0])
       } else {
+        console.log('going to superagent',city)
         let urlGeo = `https://us1.locationiq.com/v1/search.php?key=${process.env.GEOCODE_API_KEY}&q=${city}&format=json`
         superagent.get(urlGeo)
           .then(superagentResults => {
             let geo = superagentResults.body;
+
             let location = new City (geo[0],city);
-            let sql = 'INSERT INTO locations (search_query, formatted_query, latitude,longitude) VALUES ($1, $2, $3, $4);';
+            console.log('this is hte location',location);
+            let sql = 'INSERT INTO cities (search_query, formatted_query, latitude,longitude) VALUES ($1, $2, $3, $4) returning id;';
             let safeValues = [location.search_query, location.formatted_query, location.latitude, location.longitude];
-            console.log('line 41', sql);
-            console.log('safe values', safeValues)
             client.query(sql, safeValues)
               .then ((data) => {
                 console.log('line',data);
@@ -122,28 +125,27 @@ function Trail (obj) {
   this.condition_time = obj.conditionDate.slice(11,19);
 }
 
-// app.get('/movies',(request,respond) => {
-//   let latitude = request.query.latitude;
-//   let longitude = request.query.longitude;
-// let urlMovie = `https://api.themoviedb.org/3/movie/550?api_key=${process.env.MOVIE_API_KEY}`
+app.get('/movies',(request,respond) => {
+  let city = request.query.search_query;
+  let urlMovie = `https://api.themoviedb.org/3/movie/550?api_key=${process.env.MOVIE_API_KEY}`
 
 
 
 
 
-// })
+})
 
 
-// function Movie (obj) {
+function Movie (obj) {
 
-//   this.title = obj.title;
-//   this.overview = obj.overview;
-//   "average_votes": "5.80",
-//   "total_votes": "282",
-//   "image_url": "https://image.tmdb.org/t/p/w500/pN51u0l8oSEsxAYiHUzzbMrMXH7.jpg",
-//   "popularity": "15.7500",
-//   "released_on": "2009-09-18"
-// }
+  this.title = obj.title;
+  this.overview = obj.overview;
+  this.average_votes = obj.average_votes;
+  this.total_votes = obj.total_votes;
+  this.image_url = obj.image_url;
+  this.popularity = obj.popularity;
+  this.released_on = obj.released_on;
+}
 
 
 
