@@ -1,7 +1,7 @@
 
-DROP TABLE IF EXISTS cities;
+DROP TABLE IF EXISTS locations2;
 
-CREATE TABLE cities (
+CREATE TABLE locations2 (
   id SERIAL PRIMARY KEY,
     search_query VARCHAR(255),
     formatted_query VARCHAR(255),
@@ -9,7 +9,7 @@ CREATE TABLE cities (
     longitude NUMERIC(20,14)
 );
 
-INSERT INTO cities (search_query,formatted_query,latitude,longitude) 
-VALUES ('portland','hello', '0', '0');
+INSERT INTO locations2 (search_query,formatted_query,latitude,longitude) 
+VALUES ('sumthing','hello', 0, 0);
 
-SELECT * FROM cities;
+SELECT * FROM locations2;
