@@ -23,9 +23,10 @@ client.connect()
 
 app.get('/location', (request,response) => {
   let city = request.query.city;
-  let sql = 'SELECT * FROM cities WHERE search_query=$1;';
+  let sql = 'SELECT * FROM locations2 WHERE search_query=$1;';
   let safeValues = [city];
   // console.log('line 27' , sql)
+  console.log('hittinh /locations')
   client.query(sql, safeValues)
     .then(results => {
       if(results.rows.length>0) {
@@ -33,7 +34,6 @@ app.get('/location', (request,response) => {
         console.log('found in the database',city)
         response.send(results.rows[0])
       } else {
-        console.log('going to superagent',city)
         let urlGeo = `https://us1.locationiq.com/v1/search.php?key=${process.env.GEOCODE_API_KEY}&q=${city}&format=json`
         superagent.get(urlGeo)
           .then(superagentResults => {
@@ -41,7 +41,7 @@ app.get('/location', (request,response) => {
 
             let location = new City (geo[0],city);
             console.log('this is hte location',location);
-            let sql = 'INSERT INTO cities (search_query, formatted_query, latitude,longitude) VALUES ($1, $2, $3, $4) returning id;';
+            let sql = 'INSERT INTO locations2 (search_query, formatted_query, latitude,longitude) VALUES ($1, $2, $3, $4);';
             let safeValues = [location.search_query, location.formatted_query, location.latitude, location.longitude];
             client.query(sql, safeValues)
               .then ((data) => {
@@ -52,7 +52,7 @@ app.get('/location', (request,response) => {
             // response.send(location);
 
           })
-          .catch(err => console.error(err))
+          .catch(err => console.error('ERR_LOC: ', err))
       }
 
     });
@@ -125,27 +125,27 @@ function Trail (obj) {
   this.condition_time = obj.conditionDate.slice(11,19);
 }
 
-app.get('/movies',(request,respond) => {
-  let city = request.query.search_query;
-  let urlMovie = `https://api.themoviedb.org/3/movie/550?api_key=${process.env.MOVIE_API_KEY}`
+// app.get('/movies',(request,respond) => {
+//   let city = request.query.search_query;
+//   let urlMovie = `https://api.themoviedb.org/3/movie/550?api_key=${process.env.MOVIE_API_KEY}`
 
 
 
 
 
-})
+// })
 
 
-function Movie (obj) {
+// function Movie (obj) {
 
-  this.title = obj.title;
-  this.overview = obj.overview;
-  this.average_votes = obj.average_votes;
-  this.total_votes = obj.total_votes;
-  this.image_url = obj.image_url;
-  this.popularity = obj.popularity;
-  this.released_on = obj.released_on;
-}
+//   this.title = obj.title;
+//   this.overview = obj.overview;
+//   this.average_votes = obj.average_votes;
+//   this.total_votes = obj.total_votes;
+//   this.image_url = obj.image_url;
+//   this.popularity = obj.popularity;
+//   this.released_on = obj.released_on;
+// }
 
 
 
